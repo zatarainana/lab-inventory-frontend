@@ -313,25 +313,33 @@ const handleLogout = () => {
 const loadInventoryData = async () => {
   try {
     loading.value = true;
+    error.value = null;
 
-    // Fetch reagents first
-    const reagentsRes = await fetch(`${API_BASE_URL}/reagents`);
-    if (!reagentsRes.ok) throw new Error("Failed to fetch reagents");
-    const reagentsData = await reagentsRes.json();
+    // Fetch reagents
+    const response = await fetch(`${API_BASE_URL}/reagents`);
+    if (!response.ok) throw new Error("Failed to fetch reagents");
 
-    // Try to fetch history (but don't fail if it errors)
-    let historyData = { history: [] };
+    const data = await response.json();
+
+    // Handle both array and object responses
+    const reagentsArray = Array.isArray(data) ? data : data.reagents || [];
+
+    // Try to fetch history if endpoint exists
+    let historyArray = [];
     try {
       const historyRes = await fetch(`${API_BASE_URL}/reagents/history`);
-      historyData = historyRes.ok ? await historyRes.json() : { history: [] };
+      if (historyRes.ok) {
+        const historyData = await historyRes.json();
+        historyArray = Array.isArray(historyData) ? historyData : historyData.history || [];
+      }
     } catch (historyError) {
       console.warn("Could not load history:", historyError);
     }
 
     // Merge data
-    searchResults.value = reagentsData.reagents.map(reagent => ({
+    searchResults.value = reagentsArray.map(reagent => ({
       ...reagent,
-      history: historyData.history.filter(h => h.reagent_id === reagent.id)
+      history: historyArray.filter(h => h.reagent_id === reagent.id)
     }));
 
   } catch (err) {
@@ -384,36 +392,28 @@ const toggleCategory = (category) => {
 }
 
 const adjustQuantity = async (change) => {
-  if (!selectedReagent.value) return;
-
-  const newQuantity = selectedReagent.value.quantity + change;
-  if (newQuantity < 0) {
-    alert("Cannot have negative quantity");
-    return;
-  }
-
   try {
-    // Prepare update
-    const update = {
-      quantity: newQuantity,
-      user: username.value,
-      notes: newNote.value || `Quantity adjusted by ${change}`
-    };
+    const newQuantity = selectedReagent.value.quantity + change;
 
     // Optimistic UI update
-    const originalQuantity = selectedReagent.value.quantity;
     selectedReagent.value.quantity = newQuantity;
 
-    // Update server
     const response = await fetch(`${API_BASE_URL}/reagents/${selectedReagent.value.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(update)
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        quantity: newQuantity,
+        user: username.value,
+        change: change,
+        notes: `Quantity adjusted by ${change}`
+      })
     });
 
-    if (!response.ok) throw new Error("Server rejected update");
+    if (!response.ok) throw new Error(await response.text());
 
-    // Refresh data from server
+    // Refresh data after successful update
     await loadInventoryData();
 
   } catch (err) {
@@ -421,8 +421,8 @@ const adjustQuantity = async (change) => {
     if (selectedReagent.value) {
       selectedReagent.value.quantity -= change;
     }
-    alert("Sync failed. Please refresh and try again.");
-    console.error("Update error:", err);
+    console.error("Update failed:", err);
+    error.value = `Sync failed: ${err.message}`;
   }
 };
 

@@ -1,10 +1,11 @@
 ﻿import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue' // Add this line
+import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  plugins: [vue()], // Add this line
-  server: {
-    host: true,
-    allowedHosts: ['eiylmyk8s2.loclx.io']
+  plugins: [vue()],
+  base: '/', // Ensure this is exactly like this
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true // Clears dist folder on each build
   }
 })
