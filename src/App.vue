@@ -393,27 +393,34 @@ const toggleCategory = (category) => {
 
 const adjustQuantity = async (change) => {
   try {
-    const newQuantity = selectedReagent.value.quantity + change;
+    if (!selectedReagent.value) return;
 
     // Optimistic UI update
+    const originalQuantity = selectedReagent.value.quantity;
+    const newQuantity = originalQuantity + change;
     selectedReagent.value.quantity = newQuantity;
 
-    const response = await fetch(`${API_BASE_URL}/reagents/${selectedReagent.value.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        quantity: newQuantity,
-        user: username.value,
-        change: change,
-        notes: `Quantity adjusted by ${change}`
-      })
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/reagents/${selectedReagent.value.id}/quantity`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          change: change,
+          user: username.value,
+          notes: `Manual adjustment by ${username.value}`
+        })
+      }
+    );
 
-    if (!response.ok) throw new Error(await response.text());
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || "Update failed");
+    }
 
-    // Refresh data after successful update
+    // Refresh data
     await loadInventoryData();
 
   } catch (err) {
@@ -421,8 +428,8 @@ const adjustQuantity = async (change) => {
     if (selectedReagent.value) {
       selectedReagent.value.quantity -= change;
     }
-    console.error("Update failed:", err);
-    error.value = `Sync failed: ${err.message}`;
+    error.value = `Update failed: ${err.message}`;
+    console.error("Quantity adjustment error:", err);
   }
 };
 
