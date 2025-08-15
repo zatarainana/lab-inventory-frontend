@@ -194,22 +194,55 @@ const API_BASE_URL = 'https://lab-inventory-07gn.onrender.com'
 
 // User database with usernames and full names
 const USER_DATABASE = {
-  labmate1: {
-    fullName: "Lab Technician 1",
-    role: "Senior Technician"
+  Jonathan: {
+    fullName: "Jonathan Salazar",
+    role: "Estudiante"
   },
-  labmate2: {
-    fullName: "Lab Technician 2",
-    role: "Junior Technician"
+  anapau: {
+    fullName: "Ana Paula Salcedo",
+    role: "Estudiante"
   },
-  labmate3: {
-    fullName: "Research Assistant",
-    role: "Cell Biology"
+  axelcastro1: {
+    fullName: "Axel Castro",
+    role: "Estudiante"
   },
-  researcher1: {
-    fullName: "Dr. Smith",
-    role: "Principal Investigator"
+  anazat: {
+    fullName: "Ana Zatarain",
+    role: "Estudiante"
   },
+  jesslugo: {
+    fullName: "Jessica Lugo",
+    role: "Estudiante"
+  },
+  ferg: {
+    fullName: "Fernanda Garcia",
+    role: "Estudiante"
+  },
+  danielaa: {
+    fullName: "Dra. Daniela Avila",
+    role: "Investigadora"
+  },
+  danielac: {
+    fullName: "Daniela Colin",
+    role: "Estudiante"
+  },
+  xarm: {
+    fullName: "Ximena Ramirez",
+    role: "Estudiante"
+  },
+  OmarS: {
+    fullName: "Omar Santillan",
+    role: "Estudiante"
+  },
+  OmarA: {
+    fullName: "Omar Alarmart",
+    role: "Estudiante"
+  },
+  FabianD: {
+    fullName: "Dr. Fabian Díaz",
+    role: "Investigador"
+  },
+
   admin: {
     fullName: "Admin User",
     role: "System Administrator"
