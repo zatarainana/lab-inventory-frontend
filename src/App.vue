@@ -194,7 +194,7 @@ const API_BASE_URL = 'https://lab-inventory-07gn.onrender.com'
 
 // User database with usernames and full names
 const USER_DATABASE = {
-  Jonathan: {
+  jonathan: {
     fullName: "Jonathan Salazar",
     role: "Estudiante"
   },
@@ -230,15 +230,15 @@ const USER_DATABASE = {
     fullName: "Ximena Ramirez",
     role: "Estudiante"
   },
-  OmarS: {
+  omars: {
     fullName: "Omar Santillan",
     role: "Estudiante"
   },
-  OmarA: {
+  omara: {
     fullName: "Omar Alarmart",
     role: "Estudiante"
   },
-  FabianD: {
+  fabiand: {
     fullName: "Dr. Fabian Díaz",
     role: "Investigador"
   }
