@@ -241,11 +241,6 @@ const USER_DATABASE = {
   FabianD: {
     fullName: "Dr. Fabian Díaz",
     role: "Investigador"
-  },
-
-  admin: {
-    fullName: "Admin User",
-    role: "System Administrator"
   }
 }
 
